@@ -5,6 +5,7 @@ from config.mongo_collection import ADMIN
 from controllers.admin.init import init_admin
 from controllers.util.crud import find_on_db
 from models.util.errors import BadRequestException
+from routes.admin_account import route_admin_account
 
 app = FastAPI()
 
@@ -31,3 +32,6 @@ async def init_first_admin():
             status_code=400, detail=BadRequestException.ADMIN_ALREADY_EXIST
         )
     await init_admin()
+
+
+app.include_router(route_admin_account)
