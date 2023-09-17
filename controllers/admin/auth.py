@@ -15,7 +15,7 @@ async def authenticate_admin(username: str, password: str):
     if admin is None:
         raise HTTPException(status_code=401, detail="Username atau password salah")
     if not PWDCONTEXT.verify(password.strip(), admin["credential"]["password"]):
-        raise HTTPException(status_code=400, detail="Username atau password salah")
+        raise HTTPException(status_code=401, detail="Username atau password salah")
     return admin
 
 

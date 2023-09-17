@@ -4,8 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from config.mongo_collection import ADMIN
 from controllers.admin.init import init_admin
 from controllers.util.crud import find_on_db
+from models.test import TestInput
 from models.util.errors import BadRequestException
-from routes.admin_account import route_admin_account
+from routes.account.admin_account import route_admin_account
 
 app = FastAPI()
 
@@ -32,6 +33,17 @@ async def init_first_admin():
             status_code=400, detail=BadRequestException.ADMIN_ALREADY_EXIST
         )
     await init_admin()
+
+
+@app.delete("/test_insert_data")
+async def test_insert_data(input: TestInput):
+    # raise HTTPException(status_code=400, detail="Something else")
+    return input
+
+
+@app.delete("/test_delete_data")
+async def test_delete_data():
+    return {"something": "deleted"}
 
 
 app.include_router(route_admin_account)
