@@ -3,9 +3,9 @@ from datetime import date
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from controllers.admin.auth import get_current_user_admin
-from controllers.member.crud import insert_member_to_db
+from controllers.member.crud import get_list_member_on_db, insert_member_to_db
 from models.default.auth import TokenData
-from models.member.member_dto import OutputMember
+from models.member.member_dto import OutputMember, OutputMemberPage
 from models.member.util import Gender
 from models.util.util_dto import OutputTotalCount
 
@@ -47,3 +47,23 @@ async def create_member(
         currentUser=current_user,
     )
     return member
+
+
+@route_admin_member.get("", response_model=OutputMemberPage)
+async def get_list_member(
+    size: int = 10,
+    page: int = 0,
+    sort: str = "createTime",
+    dir: int = 1,
+    current_user: TokenData = Depends(get_current_user_admin),
+):
+    res = await get_list_member_on_db(size=size, page=page, sort=sort, dir=dir)
+    return OutputMemberPage(
+        size=size,
+        page=page,
+        totalElements=res["totalElements"],
+        totalPages=res["totalPages"],
+        sortBy=sort,
+        sortDir=dir,
+        content=res["data"],
+    )
