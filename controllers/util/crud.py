@@ -10,4 +10,5 @@ async def find_on_db(collection: AsyncIOMotorCollection, criteria: dict):
 
 async def insert_on_db(collection: AsyncIOMotorCollection, data: dict):
     data["createTime"] = datetime.utcnow()
-    await collection.insert_one(data)
+    op = await collection.insert_one(data)
+    return await collection.find_one(op.inserted_id)
