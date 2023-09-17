@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from models.default.base import DefaultModel
-from models.member.util import Gender
+from models.member.util import Gender, Status
 
 
 class Member(DefaultModel):
@@ -12,3 +12,4 @@ class Member(DefaultModel):
     email: str
     phoneNumber: str
     profilePicture: str
+    status: Status

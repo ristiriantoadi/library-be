@@ -3,7 +3,7 @@ from datetime import date
 from beanie import PydanticObjectId
 from pydantic import BaseModel, Field
 
-from models.member.util import Gender
+from models.member.util import Gender, Status
 
 
 class OutputMember(BaseModel):
@@ -15,3 +15,4 @@ class OutputMember(BaseModel):
     email: str
     phoneNumber: str
     profilePicture: str
+    status: Status
