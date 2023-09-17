@@ -51,19 +51,9 @@ async def create_member(
 
 @route_admin_member.get("", response_model=OutputMemberPage)
 async def get_list_member(
-    size: int = 10,
-    page: int = 0,
-    sort: str = "createTime",
-    dir: int = 1,
     current_user: TokenData = Depends(get_current_user_admin),
 ):
-    res = await get_list_member_on_db(size=size, page=page, sort=sort, dir=dir)
+    res = await get_list_member_on_db()
     return OutputMemberPage(
-        size=size,
-        page=page,
-        totalElements=res["totalElements"],
-        totalPages=res["totalPages"],
-        sortBy=sort,
-        sortDir=dir,
         content=res["data"],
     )

@@ -4,7 +4,6 @@ from typing import List
 from beanie import PydanticObjectId
 from pydantic import BaseModel, Field
 
-from models.default.base import DefaultPage
 from models.member.util import Gender, Status
 
 
@@ -21,5 +20,5 @@ class OutputMember(BaseModel):
     status: Status
 
 
-class OutputMemberPage(DefaultPage):
+class OutputMemberPage(BaseModel):
     content: List[OutputMember] = []

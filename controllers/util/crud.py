@@ -1,4 +1,3 @@
-import math
 from datetime import datetime
 
 from motor.motor_asyncio import AsyncIOMotorCollection
@@ -16,18 +15,13 @@ async def insert_on_db(collection: AsyncIOMotorCollection, data: dict):
 
 
 async def get_list_on_db(
-    size: int,
-    page: int,
     sort: str,
     dir: int,
     collection: AsyncIOMotorCollection,
     criteria: dict,
 ):
-    cursor = collection.find(criteria).skip(page * size).limit(size).sort(sort, dir)
-    data = await cursor.to_list(length=size)
-    totalElements = await collection.count_documents(criteria)
+    cursor = collection.find(criteria).sort(sort, dir)
+    data = await cursor.to_list(length=None)
     return {
         "data": data,
-        "totalElements": totalElements,
-        "totalPages": math.ceil(totalElements / size),
     }

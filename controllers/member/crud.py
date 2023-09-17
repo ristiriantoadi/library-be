@@ -35,7 +35,7 @@ async def insert_member_to_db(
     return member
 
 
-async def get_list_member_on_db(size: int, page: int, sort: str, dir: int):
+async def get_list_member_on_db():
     return await get_list_on_db(
-        size=size, page=page, sort=sort, dir=dir, collection=MEMBER, criteria={}
+        sort="createTime", dir=-1, collection=MEMBER, criteria={}
     )
