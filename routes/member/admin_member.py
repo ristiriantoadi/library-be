@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from controllers.admin.auth import get_current_user_admin
 from controllers.member.crud import get_list_member_on_db, insert_member_to_db
+from controllers.util.upload_file import upload_file
 from models.default.auth import TokenData
 from models.member.member_dto import OutputMember, OutputMemberPage
 from models.member.util import Gender
@@ -35,14 +36,17 @@ async def create_member(
     current_user: TokenData = Depends(get_current_user_admin),
 ):
     # await validate_noId_not_exist(noId)
-    # await upload_profile_picture(profilePicture)
+    fileUrl = await upload_file(
+        file=profilePicture,
+        featureFolder="profile_picture/{userId}".format(userId=current_user.userId),
+    )
     member = await insert_member_to_db(
         name=name,
         noId=noId,
         date=date,
         email=email,
         phoneNumber=phoneNumber,
-        profilePicture="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
+        profilePicture=fileUrl,
         gender=gender,
         currentUser=current_user,
     )
