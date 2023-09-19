@@ -19,6 +19,10 @@ def save_file_to_local_folder(fileObject: File):
     return pathToFile
 
 
+def delete_file(path: str):
+    os.remove(path)
+
+
 async def upload_file(file: UploadFile, featureFolder: str):
     path = save_file_to_local_folder(file)
     blob = bucket.blob(
@@ -27,5 +31,6 @@ async def upload_file(file: UploadFile, featureFolder: str):
         )
     )
     blob.upload_from_filename(path)
+    delete_file(path)
     blob.make_public()
     return blob.public_url
