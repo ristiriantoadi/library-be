@@ -1,6 +1,9 @@
 from datetime import datetime
 
+from beanie import PydanticObjectId
 from motor.motor_asyncio import AsyncIOMotorCollection
+
+from models.default.auth import TokenData
 
 
 async def find_on_db(collection: AsyncIOMotorCollection, criteria: dict):
@@ -25,3 +28,16 @@ async def get_list_on_db(
     return {
         "data": data,
     }
+
+
+async def update_on_db(
+    collection: AsyncIOMotorCollection,
+    updateData: dict,
+    currentUser: TokenData,
+    criteria: dict = {},
+):
+    updateData["updateTime"] = datetime.utcnow()
+    updateData["updaterId"] = PydanticObjectId(currentUser.userId)
+
+    criteria["isDelete"] = False
+    await collection.update_one(criteria, {"$set": updateData})

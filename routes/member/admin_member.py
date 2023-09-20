@@ -1,9 +1,14 @@
-from datetime import date
+from datetime import date, datetime
 
+from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from controllers.admin.auth import get_current_user_admin
-from controllers.member.crud import get_list_member_on_db, insert_member_to_db
+from controllers.member.crud import (
+    get_list_member_on_db,
+    insert_member_to_db,
+    update_member_on_db,
+)
 from controllers.util.upload_file import upload_file
 from models.default.auth import TokenData
 from models.member.member_dto import OutputMember, OutputMemberPage
@@ -60,4 +65,37 @@ async def get_list_member(
     res = await get_list_member_on_db()
     return OutputMemberPage(
         content=res["data"],
+    )
+
+
+@route_admin_member.put("/{idMember}")
+async def edit_member(
+    idMember: str,
+    name: str = Form(...),
+    noId: str = Form(...),
+    date: date = Form(...),
+    gender: Gender = Form(...),
+    email: str = Form(...),
+    phoneNumber: str = Form(...),
+    profilePicture: UploadFile = File(None),
+    current_user: TokenData = Depends(get_current_user_admin),
+):
+    updateData = {
+        "name": name,
+        "noId": noId,
+        "date": datetime.combine(date, datetime.min.time()),
+        "gender": gender,
+        "email": email,
+        "phoneNumber": phoneNumber,
+    }
+    if profilePicture:
+        fileUrl = await upload_file(
+            file=profilePicture,
+            featureFolder="profile_picture/{userId}".format(userId=current_user.userId),
+        )
+        updateData["profilePicture"] = fileUrl
+    await update_member_on_db(
+        criteria={"_id": PydanticObjectId(idMember)},
+        updateData=updateData,
+        currentUser=current_user,
     )
