@@ -43,7 +43,7 @@ async def create_member(
     # await validate_noId_not_exist(noId)
     fileUrl = await upload_file(
         file=profilePicture,
-        featureFolder="profile_picture/{userId}".format(userId=current_user.userId),
+        featureFolder="profile_picture",
     )
     member = await insert_member_to_db(
         name=name,
