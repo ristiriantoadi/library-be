@@ -1,8 +1,16 @@
+from typing import List
+
+from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from controllers.admin.auth import get_current_user_admin
-from controllers.book.crud import insert_book_on_db
+from controllers.book.crud import (
+    get_list_book_on_db,
+    insert_book_on_db,
+    update_book_on_db,
+)
 from controllers.util.upload_file import upload_file
+from models.book.book_dto import OutputBook
 from models.default.auth import TokenData
 from models.util.util_dto import OutputTotalCount
 
@@ -45,4 +53,47 @@ async def add_book(
         category=category,
         stock=stock,
         cover=url,
+    )
+
+
+@route_admin_book.get("", response_model=List[OutputBook])
+async def get_list_book(
+    current_user: TokenData = Depends(get_current_user_admin),
+):
+    res = await get_list_book_on_db()
+    return res["data"]
+
+
+@route_admin_book.put("/{bookId}")
+async def updateBook(
+    bookId: str,
+    title: str = Form(...),
+    isbn: str = Form(...),
+    author: str = Form(...),
+    publicationYear: int = Form(...),
+    publisher: str = Form(...),
+    category: str = Form(...),
+    stock: int = Form(...),
+    cover: UploadFile = File(None),
+    currentUser: TokenData = Depends(get_current_user_admin),
+):
+    updateData = {
+        "title": title,
+        "isbn": isbn,
+        "author": author,
+        "publicationYear": publicationYear,
+        "publisher": publisher,
+        "category": category,
+        "stock": stock,
+    }
+    if cover:
+        fileUrl = await upload_file(
+            file=cover,
+            featureFolder="cover",
+        )
+        updateData["cover"] = fileUrl
+    await update_book_on_db(
+        criteria={"_id": PydanticObjectId(bookId)},
+        data=updateData,
+        currentUser=currentUser,
     )

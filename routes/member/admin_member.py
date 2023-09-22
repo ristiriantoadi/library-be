@@ -91,7 +91,7 @@ async def edit_member(
     if profilePicture:
         fileUrl = await upload_file(
             file=profilePicture,
-            featureFolder="profile_picture/{userId}".format(userId=current_user.userId),
+            featureFolder="profile_picture",
         )
         updateData["profilePicture"] = fileUrl
     await update_member_on_db(

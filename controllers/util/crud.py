@@ -21,8 +21,9 @@ async def get_list_on_db(
     sort: str,
     dir: int,
     collection: AsyncIOMotorCollection,
-    criteria: dict,
+    criteria: dict = {},
 ):
+    criteria["isDelete"] = False
     cursor = collection.find(criteria).sort(sort, dir)
     data = await cursor.to_list(length=None)
     return {
