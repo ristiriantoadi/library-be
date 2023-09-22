@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from controllers.admin.auth import get_current_user_admin
 from controllers.member.crud import (
+    delete_member_on_db,
+    find_member,
     get_list_member_on_db,
     insert_member_to_db,
     update_member_on_db,
@@ -98,4 +100,15 @@ async def edit_member(
         criteria={"_id": PydanticObjectId(idMember)},
         updateData=updateData,
         currentUser=current_user,
+    )
+
+
+@route_admin_member.delete("/{idMember}")
+async def delete_member(
+    idMember: str,
+    currentUser: TokenData = Depends(get_current_user_admin),
+):
+    await find_member({"_id": PydanticObjectId(idMember)})
+    await delete_member_on_db(
+        criteria={"_id": PydanticObjectId(idMember)}, currentUser=currentUser
     )

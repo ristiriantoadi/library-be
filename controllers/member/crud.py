@@ -1,10 +1,24 @@
 from datetime import date, datetime
 
+from fastapi import HTTPException
+
 from config.mongo_collection import MEMBER
-from controllers.util.crud import get_list_on_db, insert_on_db, update_on_db
+from controllers.util.crud import (
+    delete_on_db,
+    find_on_db,
+    get_list_on_db,
+    insert_on_db,
+    update_on_db,
+)
 from models.default.auth import TokenData
 from models.member.member import Member
 from models.member.util import Gender, Status
+
+
+async def find_member(criteria):
+    member = await find_on_db(collection=MEMBER, criteria=criteria)
+    if member is None:
+        raise HTTPException(status_code=404, detail="Member tidak ditemukan")
 
 
 async def insert_member_to_db(
@@ -48,3 +62,7 @@ async def update_member_on_db(criteria: dict, updateData: dict, currentUser: Tok
         updateData=updateData,
         currentUser=currentUser,
     )
+
+
+async def delete_member_on_db(criteria: dict, currentUser: TokenData):
+    await delete_on_db(collection=MEMBER, criteria=criteria, currentUser=currentUser)
