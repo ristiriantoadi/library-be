@@ -42,3 +42,18 @@ async def update_on_db(
 
     criteria["isDelete"] = False
     await collection.update_one(criteria, {"$set": updateData})
+
+
+async def delete_on_db(
+    collection: AsyncIOMotorCollection, criteria: dict, currentUser: TokenData
+):
+    await collection.update_one(
+        criteria,
+        {
+            "$set": {
+                "deleteTime": datetime.utcnow(),
+                "deleterId": currentUser.userId,
+                "isDelete": True,
+            }
+        },
+    )

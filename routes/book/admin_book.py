@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from controllers.admin.auth import get_current_user_admin
 from controllers.book.crud import (
+    delete_book_on_db,
+    find_book,
     get_list_book_on_db,
     insert_book_on_db,
     update_book_on_db,
@@ -96,4 +98,15 @@ async def updateBook(
         criteria={"_id": PydanticObjectId(bookId)},
         data=updateData,
         currentUser=currentUser,
+    )
+
+
+@route_admin_book.delete("/{bookId}")
+async def delete_book(
+    bookId: str,
+    currentUser: TokenData = Depends(get_current_user_admin),
+):
+    await find_book({"_id": PydanticObjectId(bookId)})
+    await delete_book_on_db(
+        criteria={"_id": PydanticObjectId(bookId)}, currentUser=currentUser
     )
