@@ -4,6 +4,7 @@ from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from controllers.admin.auth import get_current_user_admin
+from controllers.book.count import get_book_count
 from controllers.book.crud import (
     delete_book_on_db,
     find_book,
@@ -43,7 +44,8 @@ async def get_book_categories(
 async def get_total_book_count(
     current_user: TokenData = Depends(get_current_user_admin),
 ):
-    return OutputTotalCount(count=0)
+    count = await get_book_count()
+    return OutputTotalCount(count=count)
 
 
 @route_admin_book.post("")

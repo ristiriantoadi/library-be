@@ -4,6 +4,7 @@ from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from controllers.admin.auth import get_current_user_admin
+from controllers.member.count import get_member_count
 from controllers.member.crud import (
     delete_member_on_db,
     find_member,
@@ -28,7 +29,8 @@ route_admin_member = APIRouter(
 async def get_total_member_count(
     current_user: TokenData = Depends(get_current_user_admin),
 ):
-    return OutputTotalCount(count=0)
+    count = await get_member_count()
+    return OutputTotalCount(count=count)
 
 
 @route_admin_member.post("/create", response_model=OutputMember)
