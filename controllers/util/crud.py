@@ -25,9 +25,9 @@ async def insert_many_on_db(collection: AsyncIOMotorCollection, data: List[dict]
 
 
 async def get_list_on_db(
-    sort: str,
-    dir: int,
     collection: AsyncIOMotorCollection,
+    sort: str = "createTime",
+    dir: int = -1,
     criteria: dict = {},
 ):
     criteria["isDelete"] = False

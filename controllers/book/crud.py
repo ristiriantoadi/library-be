@@ -41,8 +41,10 @@ async def insert_book_on_db(
     await insert_on_db(collection=BOOK, data=book.dict())
 
 
-async def get_list_book_on_db():
-    return await get_list_on_db(sort="createTime", dir=-1, collection=BOOK)
+async def get_list_book_on_db(criteria: dict = {}):
+    return await get_list_on_db(
+        sort="createTime", dir=-1, collection=BOOK, criteria=criteria
+    )
 
 
 async def update_book_on_db(criteria: dict, data: dict, currentUser: TokenData):

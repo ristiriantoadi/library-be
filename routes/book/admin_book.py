@@ -11,6 +11,7 @@ from controllers.book.crud import (
     insert_book_on_db,
     update_book_on_db,
 )
+from controllers.borrow.crud import get_list_borrows
 from controllers.util.upload_file import upload_file
 from models.book.book_dto import OutputBook
 from models.default.auth import TokenData
@@ -79,6 +80,24 @@ async def get_list_book(
 ):
     res = await get_list_book_on_db()
     return res["data"]
+
+
+@route_admin_book.get("/unborrowed/{memberId}", response_model=List[OutputBook])
+async def get_list_unborrowed_books(
+    memberId: str,
+    current_user: TokenData = Depends(get_current_user_admin),
+):
+    borrows = await get_list_borrows(criteria={"userId": memberId})
+    books = await get_list_book_on_db(
+        criteria={
+            "_id": {
+                "$nin": [
+                    PydanticObjectId(borrow["bookId"]) for borrow in borrows["data"]
+                ]
+            }
+        }
+    )
+    return books["data"]
 
 
 @route_admin_book.put("/{bookId}")
