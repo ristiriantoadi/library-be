@@ -23,6 +23,21 @@ route_admin_book = APIRouter(
 )
 
 
+@route_admin_book.get("/categories")
+async def get_book_categories(
+    current_user: TokenData = Depends(get_current_user_admin),
+):
+    return [
+        "Sastra",
+        "Sains",
+        "Biografi",
+        "Sejarah",
+        "Agama",
+        "Seni Rupa",
+        "Ekonomi dan Bisnis",
+    ]
+
+
 @route_admin_book.get("/total_count", response_model=OutputTotalCount)
 async def get_total_book_count(
     current_user: TokenData = Depends(get_current_user_admin),

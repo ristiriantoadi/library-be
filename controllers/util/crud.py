@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from beanie import PydanticObjectId
 from motor.motor_asyncio import AsyncIOMotorCollection
@@ -15,6 +16,12 @@ async def insert_on_db(collection: AsyncIOMotorCollection, data: dict):
     data["createTime"] = datetime.utcnow()
     op = await collection.insert_one(data)
     return await collection.find_one(op.inserted_id)
+
+
+async def insert_many_on_db(collection: AsyncIOMotorCollection, data: List[dict]):
+    if len(data) == 0:
+        return
+    op = await collection.insert_many(data)
 
 
 async def get_list_on_db(
