@@ -38,6 +38,14 @@ async def get_list_on_db(
     }
 
 
+async def get_count_on_db(
+    collection: AsyncIOMotorCollection,
+    criteria: dict = {},
+):
+    criteria["isDelete"] = False
+    return await collection.count_documents(criteria)
+
+
 async def update_on_db(
     collection: AsyncIOMotorCollection,
     updateData: dict,
