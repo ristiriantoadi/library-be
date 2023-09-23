@@ -15,6 +15,10 @@ from models.member.member import Member
 from models.member.util import Gender, Status
 
 
+async def find_member_on_db(criteria):
+    return await find_on_db(collection=MEMBER, criteria=criteria)
+
+
 async def find_member(criteria):
     member = await find_on_db(collection=MEMBER, criteria=criteria)
     if member is None:

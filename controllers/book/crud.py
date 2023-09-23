@@ -12,6 +12,10 @@ from models.book.book import Book
 from models.default.auth import TokenData
 
 
+async def find_book_on_db(criteria: dict):
+    return await find_on_db(collection=BOOK, criteria=criteria)
+
+
 async def find_book(criteria: dict):
     book = await find_on_db(collection=BOOK, criteria=criteria)
     if book is None:
