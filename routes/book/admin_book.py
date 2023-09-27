@@ -12,6 +12,10 @@ from controllers.book.crud import (
     insert_book_on_db,
     update_book_on_db,
 )
+from controllers.book.validation import (
+    validate_isbn_unique,
+    validate_isbn_unique_on_update,
+)
 from controllers.borrow.crud import get_list_borrows
 from controllers.util.upload_file import upload_file
 from models.book.book_dto import OutputBook
@@ -60,6 +64,7 @@ async def add_book(
     cover: UploadFile = File(...),
     current_user: TokenData = Depends(get_current_user_admin),
 ):
+    await validate_isbn_unique(isbn)
     url = await upload_file(
         file=cover,
         featureFolder="cover",
@@ -115,6 +120,7 @@ async def updateBook(
     cover: UploadFile = File(None),
     currentUser: TokenData = Depends(get_current_user_admin),
 ):
+    await validate_isbn_unique_on_update(isbn=isbn, id=bookId)
     updateData = {
         "title": title,
         "isbn": isbn,

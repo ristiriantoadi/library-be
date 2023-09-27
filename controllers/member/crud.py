@@ -40,7 +40,7 @@ async def insert_member_to_db(
         createTime=datetime.utcnow(),
         name=name,
         noId=noId,
-        date=date,
+        date=datetime.combine(date, datetime.min.time()),
         email=email,
         phoneNumber=phoneNumber,
         profilePicture=profilePicture,
