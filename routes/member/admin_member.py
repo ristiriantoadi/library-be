@@ -4,7 +4,10 @@ from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from controllers.admin.auth import get_current_user_admin
-from controllers.member.count import get_member_count
+from controllers.member.count import (
+    get_all_member_count_include_deleted,
+    get_member_count,
+)
 from controllers.member.crud import (
     delete_member_on_db,
     find_member,
@@ -31,6 +34,14 @@ async def get_total_member_count(
 ):
     count = await get_member_count()
     return OutputTotalCount(count=count)
+
+
+@route_admin_member.get("/sequence_number")
+async def get_sequence_number(
+    current_user: TokenData = Depends(get_current_user_admin),
+):
+    count = await get_all_member_count_include_deleted()
+    return {"sequenceNumber": str(count).zfill(3)}
 
 
 @route_admin_member.post("/create", response_model=OutputMember)
