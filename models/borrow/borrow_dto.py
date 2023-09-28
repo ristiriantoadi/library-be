@@ -11,6 +11,8 @@ class Member(BaseModel):
 class Book(BaseModel):
     title: str
     isbn: str
+    author: str
+    publisher: str
 
 
 class OutputBorrows(BaseModel):
