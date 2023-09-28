@@ -57,7 +57,7 @@ async def return_borrow_book(
     for input in inputs:
         await update_borrow(
             criteria={"_id": PydanticObjectId(input.borrowId)},
-            update={"$set": {"status": BorrowStatus.RETURNED}},
+            update={"$set": {"status": input.status}},
         )
         for fee in input.fees:
             await insert_fee_on_db(
