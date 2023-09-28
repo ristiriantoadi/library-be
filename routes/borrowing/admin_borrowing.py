@@ -1,5 +1,6 @@
 from typing import List
 
+from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends
 
 from controllers.admin.auth import get_current_user_admin
@@ -8,10 +9,12 @@ from controllers.borrow.crud import (
     get_additional_data_borrow,
     get_count_borrows,
     get_list_borrows,
+    update_borrow,
 )
 from controllers.borrow.filter import get_filter_borrow
+from controllers.fee.crud import insert_fee_on_db
 from models.borrow.borrow import BorrowStatus
-from models.borrow.borrow_dto import OutputBorrows
+from models.borrow.borrow_dto import InputReturnBorrow, OutputBorrows
 from models.default.auth import TokenData
 from models.util.util_dto import OutputTotalCount
 
@@ -43,6 +46,23 @@ async def borrow_book(
     await borrow_book_controller(
         bookIds=bookIds, currentUser=currentUser, memberId=memberId
     )
+
+
+@route_admin_borrowing.put("/{memberId}/return")
+async def return_borrow_book(
+    memberId: str,
+    inputs: List[InputReturnBorrow],
+    currentUser: TokenData = Depends(get_current_user_admin),
+):
+    for input in inputs:
+        await update_borrow(
+            criteria={"_id": PydanticObjectId(input.borrowId)},
+            update={"$set": {"status": BorrowStatus.RETURNED}},
+        )
+        for fee in input.fees:
+            await insert_fee_on_db(
+                memberId=memberId, fee=fee, bookId=input.bookId, borrowId=input.borrowId
+            )
 
 
 @route_admin_borrowing.get("", response_model=List[OutputBorrows])
