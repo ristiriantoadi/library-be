@@ -26,3 +26,7 @@ async def get_additional_data_borrow(borrows: List[dict]):
             {"_id": PydanticObjectId(borrow["bookId"])}
         )
     return borrows
+
+
+async def update_borrow(criteria: dict, update: dict):
+    await BORROW.update_one(criteria, update)
