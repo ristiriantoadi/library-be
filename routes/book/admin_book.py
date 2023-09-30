@@ -5,11 +5,17 @@ from fastapi import APIRouter, Depends, File, Form, UploadFile
 
 from controllers.admin.auth import get_current_user_admin
 from controllers.book.count import get_book_count
-from controllers.book.crud import (delete_book_on_db, find_book,
-                                   get_list_book_on_db, insert_book_on_db,
-                                   update_book_on_db)
-from controllers.book.validation import (validate_isbn_unique,
-                                         validate_isbn_unique_on_update)
+from controllers.book.crud import (
+    delete_book_on_db,
+    find_book,
+    get_list_book_on_db,
+    insert_book_on_db,
+    update_book_on_db,
+)
+from controllers.book.validation import (
+    validate_isbn_unique,
+    validate_isbn_unique_on_update,
+)
 from controllers.borrow.crud import get_list_borrows
 from controllers.util.upload_file import upload_file
 from models.book.book_dto import OutputBook
@@ -80,6 +86,7 @@ async def get_list_book(
     current_user: TokenData = Depends(get_current_user_admin),
 ):
     res = await get_list_book_on_db()
+    print("books", res["data"])
     return res["data"]
 
 
@@ -96,7 +103,7 @@ async def get_list_unborrowed_books(
                     PydanticObjectId(borrow["bookId"]) for borrow in borrows["data"]
                 ]
             },
-            "stock":{"$gt":0}
+            "stock": {"$gt": 0},
         }
     )
     return books["data"]
