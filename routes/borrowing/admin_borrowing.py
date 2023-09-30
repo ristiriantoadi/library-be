@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 
 from beanie import PydanticObjectId
@@ -58,7 +59,13 @@ async def return_borrow_book(
     for input in inputs:
         await update_borrow(
             criteria={"_id": PydanticObjectId(input.borrowId)},
-            update={"$set": {"status": input.status}},
+            update={
+                "$set": {
+                    "status": input.status,
+                    "updateTime": datetime.utcnow(),
+                    "updaterId": currentUser.userId,
+                }
+            },
         )
         if input.status != BorrowStatus.LOST:
             await update_book(
