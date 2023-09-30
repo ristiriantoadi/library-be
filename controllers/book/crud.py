@@ -51,6 +51,10 @@ async def get_list_book_on_db(criteria: dict = {}):
     )
 
 
+async def update_book(criteria: dict, update: dict):
+    await BOOK.update_one(criteria, update)
+
+
 async def update_book_on_db(criteria: dict, data: dict, currentUser: TokenData):
     await update_on_db(
         collection=BOOK, updateData=data, currentUser=currentUser, criteria=criteria

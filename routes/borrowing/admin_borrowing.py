@@ -4,6 +4,7 @@ from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends
 
 from controllers.admin.auth import get_current_user_admin
+from controllers.book.crud import update_book
 from controllers.borrow.borrow import borrow_book_controller
 from controllers.borrow.crud import (
     get_additional_data_borrow,
@@ -59,6 +60,11 @@ async def return_borrow_book(
             criteria={"_id": PydanticObjectId(input.borrowId)},
             update={"$set": {"status": input.status}},
         )
+        if input.status != BorrowStatus.LOST:
+            await update_book(
+                criteria={"_id": PydanticObjectId(input.bookId)},
+                update={"$inc": {"stock": 1}},
+            )
         for fee in input.fees:
             await insert_fee_on_db(
                 memberId=memberId, fee=fee, bookId=input.bookId, borrowId=input.borrowId
