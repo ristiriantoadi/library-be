@@ -7,12 +7,9 @@ from fastapi import APIRouter, Depends
 from controllers.admin.auth import get_current_user_admin
 from controllers.book.crud import update_book
 from controllers.borrow.borrow import borrow_book_controller
-from controllers.borrow.crud import (
-    get_additional_data_borrow,
-    get_count_borrows,
-    get_list_borrows,
-    update_borrow,
-)
+from controllers.borrow.crud import (get_additional_data_borrow,
+                                     get_count_borrows, get_list_borrows,
+                                     update_borrow)
 from controllers.borrow.filter import get_filter_borrow
 from controllers.fee.crud import insert_fee_on_db
 from models.borrow.borrow import BorrowStatus
@@ -88,5 +85,4 @@ async def get_borrows(
         criteria=get_filter_borrow(memberId=memberId, status=status)
     )
     borrows = await get_additional_data_borrow(borrows=borrows["data"])
-    print("borrows", borrows)
     return borrows
