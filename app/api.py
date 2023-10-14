@@ -9,6 +9,7 @@ from models.util.errors import BadRequestException
 from routes.account.admin_account import route_admin_account
 from routes.book.admin_book import route_admin_book
 from routes.borrowing.admin_borrowing import route_admin_borrowing
+from routes.fee.admin import route_admin_fee
 from routes.member.admin_member import route_admin_member
 
 app = FastAPI()
@@ -53,3 +54,4 @@ app.include_router(route_admin_account)
 app.include_router(route_admin_book)
 app.include_router(route_admin_member)
 app.include_router(route_admin_borrowing)
+app.include_router(route_admin_fee)
