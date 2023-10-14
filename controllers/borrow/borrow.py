@@ -21,8 +21,8 @@ async def borrow_book_controller(
         borrow = Borrow(
             creatorId=PydanticObjectId(currentUser.userId),
             createTime=datetime.utcnow(),
-            bookId=PydanticObjectId(id),
-            userId=PydanticObjectId(memberId),
+            bookId=id,
+            userId=memberId,
         )
         borrows.append(borrow.dict())
         await decrease_book_stock(id)

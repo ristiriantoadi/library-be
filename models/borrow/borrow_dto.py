@@ -20,6 +20,7 @@ class Book(BaseModel):
     isbn: str
     author: str
     publisher: str
+    cover: str
 
 
 class OutputBorrows(BaseModel):

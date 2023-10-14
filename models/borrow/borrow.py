@@ -1,6 +1,5 @@
 from enum import Enum
 
-from beanie import PydanticObjectId
 
 from models.default.base import DefaultModel
 
@@ -12,6 +11,6 @@ class BorrowStatus(str, Enum):
 
 
 class Borrow(DefaultModel):
-    bookId: PydanticObjectId
-    userId: PydanticObjectId
+    bookId: str
+    userId: str
     status: BorrowStatus = BorrowStatus.ON_BORROW
