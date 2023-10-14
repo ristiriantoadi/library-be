@@ -1,6 +1,5 @@
 from enum import Enum
 
-from beanie import PydanticObjectId
 
 from models.default.base import DefaultModel
 
@@ -12,8 +11,8 @@ class FeeType(str, Enum):
 
 
 class Fee(DefaultModel):
-    userId: PydanticObjectId
-    bookId: PydanticObjectId
-    borrowId: PydanticObjectId
+    userId: str
+    bookId: str
+    borrowId: str
     amount: int
     feeType: FeeType
