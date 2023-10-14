@@ -19,6 +19,7 @@ from controllers.book.validation import (
 from controllers.borrow.crud import get_list_borrows
 from controllers.util.upload_file import upload_file
 from models.book.book_dto import OutputBook
+from models.borrow.borrow import BorrowStatus
 from models.default.auth import TokenData
 from models.util.util_dto import OutputTotalCount
 
@@ -95,7 +96,9 @@ async def get_list_unborrowed_books(
     memberId: str,
     current_user: TokenData = Depends(get_current_user_admin),
 ):
-    borrows = await get_list_borrows(criteria={"userId": memberId})
+    borrows = await get_list_borrows(
+        criteria={"userId": memberId, "status": BorrowStatus.ON_BORROW}
+    )
     books = await get_list_book_on_db(
         criteria={
             "_id": {
