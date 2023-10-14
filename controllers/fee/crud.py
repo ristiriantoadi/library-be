@@ -17,7 +17,7 @@ async def insert_fee_on_db(memberId: str, fee: InputFee, bookId: str, borrowId: 
         amount=fee.amount,
         feeType=fee.feeType,
     )
-    await insert_on_db(collection=FEE, data=data.model_dump())
+    await insert_on_db(collection=FEE, data=data.dict())
 
 
 async def get_list_fee_on_db(criteria: dict = {}):
